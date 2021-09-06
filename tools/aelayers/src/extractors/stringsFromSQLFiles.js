@@ -1,4 +1,4 @@
-const {extractAll} = require('../util');
+const { extractAll } = require('../util');
 const sqlFileExtractor = require('./stringsFromSQLFile');
 
 async function extractor(path) {
@@ -6,4 +6,3 @@ async function extractor(path) {
 }
 
 module.exports = extractor;
-

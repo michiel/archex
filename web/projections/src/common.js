@@ -15,28 +15,26 @@ const palette = [
   '#FFD166',
   '#06D6A0',
   '#118AB2',
-  '#073B4C',
+  '#073B4C'
 ];
 
 const gData = window.graphData;
 
-const getRandom = (max=20) => {
+const getRandom = (max = 20) => {
   return Math.floor(Math.random() * max);
-}
+};
 
-function onlyUnique(value, index, self) { 
+function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
 function getGraphProperties(gData) {
-  const linkLayers = gData.links.map(n=> n.layer)
-    .filter(onlyUnique);
-  const nodeLayers = gData.nodes.map(n=> n.layer)
-    .filter(onlyUnique);
+  const linkLayers = gData.links.map((n) => n.layer).filter(onlyUnique);
+  const nodeLayers = gData.nodes.map((n) => n.layer).filter(onlyUnique);
   const allLayers = linkLayers.concat(nodeLayers);
 
   const props = {};
-  allLayers.forEach(l=> props[l] = { types: []});
+  allLayers.forEach((l) => (props[l] = { types: [] }));
 
   function ex(el) {
     const val = el.attrs.type;
@@ -46,7 +44,7 @@ function getGraphProperties(gData) {
         arr.push(val);
       }
     }
-  };
+  }
 
   gData.nodes.forEach(ex);
   gData.links.forEach(ex);
@@ -55,23 +53,21 @@ function getGraphProperties(gData) {
 }
 
 function getLinkLayers(gData) {
-  return gData.links.map(n=> n.layer)
-    .filter(onlyUnique);
+  return gData.links.map((n) => n.layer).filter(onlyUnique);
 }
 
 function getNodeLayers(gData) {
-  return gData.nodes.map(n=> n.layer)
-    .filter(onlyUnique);
+  return gData.nodes.map((n) => n.layer).filter(onlyUnique);
 }
 
 function getLayers(gData) {
-  return gData.nodes.map(n=> n.layer)
-    .concat(gData.links.map(n=> n.layer))
+  return gData.nodes
+    .map((n) => n.layer)
+    .concat(gData.links.map((n) => n.layer))
     .filter(onlyUnique);
 }
 
 function builder(BuilderFn) {
-
   const startDistance = 125;
   const maxDistance = 1750;
 
@@ -81,25 +77,25 @@ function builder(BuilderFn) {
   const layerProps = getGraphProperties(window.graphData);
 
   //Define GUI
-  const Settings = function() {
+  const Settings = function () {
     this.cameraDistance = 700;
     this.cameraSpeed = 50;
     this.cameraAngle = 0;
 
-    linkLayers.forEach(layer=> {
+    linkLayers.forEach((layer) => {
       const label = `${layer}Distance`;
       this[label] = startDistance;
     });
 
-    layers.forEach(layer=> {
+    layers.forEach((layer) => {
       const label = `show_${layer}`;
       this[label] = true;
     });
 
-    let i=0;
+    let i = 0;
     for (let l in layerProps) {
       const types = layerProps[l].types;
-      types.forEach(t=> {
+      types.forEach((t) => {
         this[`${t}_${l}_size`] = 0;
         this[`${t}_${l}_show`] = true;
         this[`${t}_${l}_color`] = palette[i];
@@ -127,69 +123,41 @@ function builder(BuilderFn) {
   gui.remember(settings);
 
   let folder = gui.addFolder('Link distances');
-  linkLayers.forEach(layer=> {
+  linkLayers.forEach((layer) => {
     const label = `${layer}Distance`;
-    folder
-      .add(settings, label, 0, maxDistance)
-      .onChange(updateLinkDistance);
+    folder.add(settings, label, 0, maxDistance).onChange(updateLinkDistance);
   });
 
   folder = gui.addFolder('Camera');
 
-  folder
-    .add(settings, 'cameraDistance', 0, 2500)
-    .onChange(updateCameraPosition);
-  folder
-    .add(settings, 'cameraSpeed', 5, 100)
-    .onChange(updateCameraSpeed);
-  folder
-    .add(settings, 'rotateCamera')
-    .onChange(updateCameraRotation);
-  folder
-    .add(settings, 'rotateX')
-    .onChange(updateCameraPosition);
-  folder
-    .add(settings, 'rotateY')
-    .onChange(updateCameraPosition);
-  folder
-    .add(settings, 'rotateZ')
-    .onChange(updateCameraPosition);
+  folder.add(settings, 'cameraDistance', 0, 2500).onChange(updateCameraPosition);
+  folder.add(settings, 'cameraSpeed', 5, 100).onChange(updateCameraSpeed);
+  folder.add(settings, 'rotateCamera').onChange(updateCameraRotation);
+  folder.add(settings, 'rotateX').onChange(updateCameraPosition);
+  folder.add(settings, 'rotateY').onChange(updateCameraPosition);
+  folder.add(settings, 'rotateZ').onChange(updateCameraPosition);
 
   folder = gui.addFolder('Styling');
   const controllerLabelSizeNormal = folder.add(settings, 'labelSize', 5, 100);
 
-  folder
-    .add(settings, 'useParticles')
-    .onChange(updateGraph);
-  folder
-    .add(settings, 'showArrows')
-    .onChange(updateGraph);
-  folder
-    .add(settings, 'arrowLength', 1, 15)
-    .onChange(updateGraph);
+  folder.add(settings, 'useParticles').onChange(updateGraph);
+  folder.add(settings, 'showArrows').onChange(updateGraph);
+  folder.add(settings, 'arrowLength', 1, 15).onChange(updateGraph);
 
   folder = gui.addFolder('Layers');
 
-  layers.forEach(layer=> {
+  layers.forEach((layer) => {
     const label = `show_${layer}`;
-    folder
-      .add(settings, label)
-      .onChange(showLayers);
+    folder.add(settings, label).onChange(showLayers);
   });
 
   for (let l in layerProps) {
     let subfolder = folder.addFolder(`Layer - ${l}`);
     const types = layerProps[l].types;
-    types.forEach(t=> {
-      subfolder
-        .add(settings, `${t}_${l}_show`)
-        .onChange(showLayers);
-      subfolder
-        .addColor(settings, `${t}_${l}_color`)
-        .onChange(showLayers);
-      subfolder
-        .add(settings, `${t}_${l}_size`, 0, 50)
-        .onChange(updateSizes);
+    types.forEach((t) => {
+      subfolder.add(settings, `${t}_${l}_show`).onChange(showLayers);
+      subfolder.addColor(settings, `${t}_${l}_color`).onChange(showLayers);
+      subfolder.add(settings, `${t}_${l}_size`, 0, 50).onChange(updateSizes);
     });
   }
 
@@ -203,9 +171,8 @@ function builder(BuilderFn) {
   }
 
   // const graph = BuilderFn({ controlType: 'fly' })
-  const graph = BuilderFn()
-  (document.getElementById('3d-graph'))
-    .nodeLabel(node => node.name)
+  const graph = BuilderFn()(document.getElementById('3d-graph'))
+    .nodeLabel((node) => node.name)
     // .nodeVal(node => node.name)
     .nodeColor(getColor)
     .linkColor(getColor)
@@ -223,9 +190,7 @@ function builder(BuilderFn) {
     .onNodeClick(focusNode)
     .graphData(gData);
 
-  function getNodeColor(node) {
-
-  }
+  function getNodeColor(node) {}
 
   function buildNodeObject(node) {
     // use a sphere as a drag handle
@@ -243,24 +208,24 @@ function builder(BuilderFn) {
 
   function showLayers() {
     let { nodes, links } = window.graphData; // graph.graphData();
-    const visibleLayers = layers.filter(layer=> {
+    const visibleLayers = layers.filter((layer) => {
       return settings[`show_${layer}`];
     });
 
-    nodes = nodes.filter(node=> {
+    nodes = nodes.filter((node) => {
       if (visibleLayers.indexOf(node.layer) < 0) {
-        links = links.filter(l => l.source !== node && l.target !== node);
+        links = links.filter((l) => l.source !== node && l.target !== node);
         return false;
       } else {
         if (settings[`${node.attrs.type}_${node.layer}_show`] === false) {
-          links = links.filter(l => l.source !== node && l.target !== node);
+          links = links.filter((l) => l.source !== node && l.target !== node);
           return false;
         } else {
           return true;
         }
       }
     });
-    links = links.filter(l=> {
+    links = links.filter((l) => {
       if (visibleLayers.indexOf(l.layer) > 0) {
         if (settings[`${l.attrs.type}_${l.layer}_show`] === false) {
           return false;
@@ -279,19 +244,18 @@ function builder(BuilderFn) {
     stopCameraRotation();
     // Aim at node from outside it
     const distance = 250;
-    const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+    const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
 
     graph.cameraPosition(
       { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
       node, // lookAt ({ x, y, z })
-      3000  // ms transition duration
+      3000 // ms transition duration
     );
   }
 
   function updateSizes() {
     // graph.nodeRelSize(el=> parseInt(settings[`${el.attrs.type}_${el.layer}_size`]));
-    graph.linkWidth(el=> settings[`${el.attrs.type}_${el.layer}_size`]);
-
+    graph.linkWidth((el) => settings[`${el.attrs.type}_${el.layer}_size`]);
   }
 
   function updateNodes() {
@@ -307,9 +271,8 @@ function builder(BuilderFn) {
     }
     updateCameraPosition();
     // angle = (angle % 360) + Math.PI / 300;
-    angle  += Math.PI / 300;
+    angle += Math.PI / 300;
   };
-
 
   function updateCameraSpeed() {
     stopCameraRotation();
@@ -338,16 +301,16 @@ function builder(BuilderFn) {
     interval && clearInterval(interval);
     graph.enableNavigationControls(true);
     graph.showNavInfo(true);
-  }
+  };
 
   const startCameraRotation = () => {
     stopCameraRotation();
     if (settings.rotateCamera) {
-      interval = setInterval(rotateCamera , settings.cameraSpeed);
+      interval = setInterval(rotateCamera, settings.cameraSpeed);
       graph.enableNavigationControls(false);
       graph.showNavInfo(false);
     }
-  }
+  };
 
   startCameraRotation();
 
@@ -360,9 +323,7 @@ function builder(BuilderFn) {
     }
   };
 
-  const linkForce = graph
-    .d3Force('link')
-    .distance(distanceForLayer);
+  const linkForce = graph.d3Force('link').distance(distanceForLayer);
 
   function updateCameraRotation() {
     startCameraRotation();
@@ -382,8 +343,4 @@ function builder(BuilderFn) {
   console.log(gui.getSaveObject());
 }
 
-export {
-  builder
-}
-
-
+export { builder };

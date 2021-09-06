@@ -1,4 +1,3 @@
-
 function toGML(arr) {
   let output = [];
   output.push(`
@@ -7,9 +6,9 @@ graph [
     label "Graph"
     `);
 
-  arr.forEach(el=> {
+  arr.forEach((el) => {
     let str = '';
-    switch(el.layer) {
+    switch (el.layer) {
       case 'data':
       case 'compute':
         str = `
@@ -21,7 +20,7 @@ graph [
         layer ${el.layer}
 `;
 
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -30,8 +29,6 @@ graph [
         output.push(str);
 
         break;
-
-
 
       case 'data_link':
         str = `
@@ -44,7 +41,7 @@ graph [
         str += `
         layer ${el.layer}`;
 
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -52,8 +49,6 @@ graph [
     ]`;
         output.push(str);
         break;
-
-
 
       case 'data_access':
         el.targets.forEach((target, idx) => {
@@ -67,17 +62,15 @@ graph [
           str += `
         layer ${el.layer}`;
 
-          Object.entries(el.attrs).forEach(([k, v])=> {
+          Object.entries(el.attrs).forEach(([k, v]) => {
             str += `
         ${k} "${v}"`;
           });
           str += `
     ]`;
           output.push(str);
-
         });
         break;
-
 
       default:
         throw new Error('Unhandled case ' + el.layer);
@@ -98,9 +91,9 @@ graph [
     label "Graph"
     `);
 
-  arr.forEach(el=> {
+  arr.forEach((el) => {
     let str = '';
-    switch(el.layer) {
+    switch (el.layer) {
       case 'data':
       case 'compute':
         str = `
@@ -112,7 +105,7 @@ graph [
         layer ${el.layer}
 `;
 
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -121,7 +114,6 @@ graph [
         output.push(str);
 
         break;
-
 
       case 'data_link':
         str = `
@@ -133,7 +125,7 @@ graph [
         layer ${el.layer}
 `;
 
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -146,7 +138,7 @@ graph [
         source ${el.nodes[0]}
         target ${el.id}
         `;
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -159,7 +151,7 @@ graph [
         source ${el.id}
         target ${el.nodes[1]}
         `;
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -168,8 +160,6 @@ graph [
         output.push(str);
 
         break;
-
-
 
       case 'data_access':
         str = `
@@ -181,7 +171,7 @@ graph [
         layer ${el.layer}
 `;
 
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -195,7 +185,7 @@ graph [
         source ${el.source}
         target ${el.id}
         `;
-        Object.entries(el.attrs).forEach(([k, v])=> {
+        Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
         ${k} "${v}"`;
         });
@@ -203,14 +193,14 @@ graph [
     ]`;
         output.push(str);
 
-        el.targets.forEach((target, idx)=> {
+        el.targets.forEach((target, idx) => {
           str = `
     edge [
         id ${el.id}_${target}
         source ${el.id}
         target ${target}
         `;
-          Object.entries(el.attrs).forEach(([k, v])=> {
+          Object.entries(el.attrs).forEach(([k, v]) => {
             str += `
         ${k} "${v}"`;
           });
@@ -233,31 +223,33 @@ graph [
 }
 
 function colorForLayer(layer) {
-  return {
-    'data_link': 'yellow',
-    'data_access': 'magenta',
-    'data': 'lightgreen',
-    'compute': 'lightblue',
-  }[layer] || 'cyan';
+  return (
+    {
+      data_link: 'yellow',
+      data_access: 'magenta',
+      data: 'lightgreen',
+      compute: 'lightblue'
+    }[layer] || 'cyan'
+  );
 }
 
-function extractAttrs(attrs={}) {
+function extractAttrs(attrs = {}) {
   return {
-    type: attrs.type || 'none',
+    type: attrs.type || 'none'
   };
 }
 
 function toF3DJSON(arr) {
   const props = {
-    fontcolor: 'white',
+    fontcolor: 'white'
   };
   let output = {
     nodes: [],
-    links: [],
+    links: []
   };
 
-  arr.forEach(el=> {
-    switch(el.layer) {
+  arr.forEach((el) => {
+    switch (el.layer) {
       case 'compute':
         output.nodes.push({
           id: el.id,
@@ -266,12 +258,11 @@ function toF3DJSON(arr) {
           layer: el.layer,
           color: colorForLayer(el.layer),
           attrs: extractAttrs(el.attrs),
-          ...props,
+          ...props
         });
         break;
 
       case 'data':
-
         output.nodes.push({
           id: el.id,
           label: el.label,
@@ -279,12 +270,11 @@ function toF3DJSON(arr) {
           layer: el.layer,
           color: colorForLayer(el.layer),
           attrs: extractAttrs(el.attrs),
-          ...props,
+          ...props
         });
         break;
 
       case 'data_link':
-
         output.links.push({
           id: el.id,
           label: el.label,
@@ -294,13 +284,12 @@ function toF3DJSON(arr) {
           source: el.nodes[0],
           target: el.nodes[1],
           attrs: extractAttrs(el.attrs),
-          ...props,
+          ...props
         });
         break;
 
       case 'data_access':
-
-        el.targets.forEach(t=> {
+        el.targets.forEach((t) => {
           output.links.push({
             id: el.id,
             label: el.label,
@@ -310,7 +299,7 @@ function toF3DJSON(arr) {
             source: el.source,
             target: t,
             attrs: extractAttrs(el.attrs),
-            ...props,
+            ...props
           });
         });
         break;
@@ -318,7 +307,6 @@ function toF3DJSON(arr) {
       default:
         throw new Error('Unhandled case ' + el.layer);
         break;
-
     }
   });
 
@@ -331,18 +319,9 @@ function toCSVColumn(str) {
 }
 
 function toCSV(arr) {
+  const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes'];
 
-  const attrs = [
-    'id',
-    'label',
-    'layer',
-    'source',
-    'target',
-    'targets',
-    'nodes',
-  ];
-
-  arr.forEach(el=> {
+  arr.forEach((el) => {
     if (el.attrs) {
       for (let key in el.attrs) {
         if (attrs.indexOf(key) < 0) {
@@ -354,7 +333,7 @@ function toCSV(arr) {
 
   const output = [];
   output.push(attrs.join(','));
-  arr.forEach(el=> {
+  arr.forEach((el) => {
     let res = new Array(attrs.length).fill('');
     for (let tkey in el) {
       if (tkey === 'attrs') {
@@ -363,23 +342,22 @@ function toCSV(arr) {
           res[attrs.indexOf(akey)] = toCSVColumn(val);
         }
       } else {
-          let val = el[tkey];
-          if (tkey === 'nodes') {
-            res[attrs.indexOf('source')] = val[0];
-            res[attrs.indexOf('target')] = val[1];
-          }
-          res[attrs.indexOf(tkey)] = val;
+        let val = el[tkey];
+        if (tkey === 'nodes') {
+          res[attrs.indexOf('source')] = val[0];
+          res[attrs.indexOf('target')] = val[1];
+        }
+        res[attrs.indexOf(tkey)] = val;
       }
     }
     output.push(res.join(','));
   });
   return output.join('\n');
-
 }
 
 module.exports = {
   toF3DJSON,
   toGML,
   toGMLExpanded,
-  toCSV,
+  toCSV
 };

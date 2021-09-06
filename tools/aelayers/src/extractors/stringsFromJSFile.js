@@ -1,26 +1,23 @@
-const fs = require("fs");
-const esprima = require("esprima");
-const estraverse = require("estraverse");
+const fs = require('fs');
+const esprima = require('esprima');
+const estraverse = require('estraverse');
 
 function extractor(filename) {
   const lines = [];
-  const ast = esprima.parseScript(
-      fs.readFileSync(filename).toString()
-  );
+  const ast = esprima.parseScript(fs.readFileSync(filename).toString());
 
   estraverse.traverse(ast, {
     enter: (node, parent) => {
       let val = '';
       // console.log(node.type);
-      if (node.type === "TemplateLiteral") {
+      if (node.type === 'TemplateLiteral') {
         // val = node.quasis.map(q => q.value.cooked).join(" '1' ");
-        val = node.quasis.map(q => q.value.cooked).join(" ");
+        val = node.quasis.map((q) => q.value.cooked).join(' ');
         // val = val.replace(/\#.*\n/g, '\n');
         // val = val.replace(/\n/g, '');
         // val = val.replace(/\s+/g, ' ');
-
       }
-      if (node.type === "Literal") {
+      if (node.type === 'Literal') {
         // console.error(node.value);
         val = node.raw;
       }
@@ -42,8 +39,7 @@ function extractor(filename) {
     }
   });
 
-
-  return lines.filter(s=> s.replace(/\s+/g, '') !== '');
+  return lines.filter((s) => s.replace(/\s+/g, '') !== '');
 }
 
 module.exports = extractor;

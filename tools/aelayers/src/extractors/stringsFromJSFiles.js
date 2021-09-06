@@ -1,5 +1,4 @@
-
-const {extractAll} = require('../util');
+const { extractAll } = require('../util');
 const jsFileExtractor = require('./stringsFromJSFile');
 
 async function extractor(path) {
@@ -7,6 +6,3 @@ async function extractor(path) {
 }
 
 module.exports = extractor;
-
-
-

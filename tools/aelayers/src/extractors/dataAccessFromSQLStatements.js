@@ -1,9 +1,9 @@
-const {toId, tableId, componentId, onlyUnique, mergeElements} = require('../util');
+const { toId, tableId, componentId, onlyUnique, mergeElements } = require('../util');
 
 function componentStubs(das, config) {
-  const componentIds = new Set(das.map(el=> el.id).filter(onlyUnique));
+  const componentIds = new Set(das.map((el) => el.id).filter(onlyUnique));
   const res = [];
-  das.forEach(da=> {
+  das.forEach((da) => {
     if (componentIds.has(da.id)) {
       componentIds.delete(da.id);
       res.push({
@@ -12,7 +12,7 @@ function componentStubs(das, config) {
         layer: 'compute',
         attrs: {
           type: config.componentStubType,
-          extractor: 'dataAccessFromSQLStatements',
+          extractor: 'dataAccessFromSQLStatements'
         }
       });
     }
@@ -21,74 +21,74 @@ function componentStubs(das, config) {
   return res;
 }
 
-function summToLayer(summ, config, id=0) {
+function summToLayer(summ, config, id = 0) {
   return {
     id: toId(`data_access_${config.dbName}_${config.fnName}_${id}`),
     label: `Access ${config.fnName} ${id}`,
     layer: 'data_access',
     source: componentId(config.fnName),
-    targets: summ.tables.map(t => tableId(config.dbName, t)).filter(onlyUnique),
+    targets: summ.tables.map((t) => tableId(config.dbName, t)).filter(onlyUnique),
     attrs: {
       type: 'DatabaseAccess',
       database: config.dbName,
       extractor: 'dataAccessFromSQLStatements',
       querytype: summ.type,
-      query: summ.query,
+      query: summ.query
     }
-  }
+  };
 }
 
 const defaultConfig = {
   fnName: 'unknown',
   dbName: 'unknown',
   generateComponentStubs: false,
-  componentStubType: 'unknown',
+  componentStubType: 'unknown'
 };
 
-function extractor(statements, config=defaultConfig) {
+function extractor(statements, config = defaultConfig) {
   const relationships = [];
-  statements.forEach(statement=> {
+  statements.forEach((statement) => {
     const summ = {
       type: 'OTHER',
       tables: [],
-      query: statement,
+      query: statement
     };
 
     function addTable(table) {
       table = table.replace(/[\'"]/, '');
-        table = table.replace(/\(.*/, '');
-          table = table.replace(/\).*/, '');
-        table = table.replace(/\s.*/, '');
-        table = table.replace(/.+\./, '');
-        // console.log('TABLE ', table);
-        if (table.match(/[\(A-Z]/)) {
-          // skip
-        } else if (table.match(/1/)) {
-          // skip
-        } else if (table.match(/^\s+$/)) {
-          // skip
-        } else {
-          summ.tables.push(table);
-        }
+      table = table.replace(/\(.*/, '');
+      table = table.replace(/\).*/, '');
+      table = table.replace(/\s.*/, '');
+      table = table.replace(/.+\./, '');
+      // console.log('TABLE ', table);
+      if (table.match(/[\(A-Z]/)) {
+        // skip
+      } else if (table.match(/1/)) {
+        // skip
+      } else if (table.match(/^\s+$/)) {
+        // skip
+      } else {
+        summ.tables.push(table);
+      }
     }
 
     if (statement.match(/SELECT /i)) {
       summ.type = 'SELECT';
-      const matches = statement.match(/FROM ([^\s\(]+)/ig);
-        if (matches) {
-          // console.log(matches);
-          matches.forEach(match=> {
-            addTable(match.replace(/FROM /i, ''));
-          });
-        }
+      const matches = statement.match(/FROM ([^\s\(]+)/gi);
+      if (matches) {
+        // console.log(matches);
+        matches.forEach((match) => {
+          addTable(match.replace(/FROM /i, ''));
+        });
+      }
 
-        const joins = statement.match(/JOIN ([^\s\(]+)/ig);
-          if (joins) {
-            // console.log('JOINS ', joins);
-            joins.forEach(match=> {
-              addTable(match.replace(/JOIN /i, ''));
-            });
-          }
+      const joins = statement.match(/JOIN ([^\s\(]+)/gi);
+      if (joins) {
+        // console.log('JOINS ', joins);
+        joins.forEach((match) => {
+          addTable(match.replace(/JOIN /i, ''));
+        });
+      }
     }
     if (statement.match(/UPDATE /i)) {
       if (statement.match(/IN DUPLICATE KEY UPDATE /i)) {
@@ -104,39 +104,36 @@ function extractor(statements, config=defaultConfig) {
       summ.type = 'INSERT';
       let t = statement.replace(/.*INSERT (IGNORE )?INTO /i, '');
       t = t.replace(/\(.*/, '');
-        t = t.replace(/\s.*/, '');
-        addTable(t);
-      }
+      t = t.replace(/\s.*/, '');
+      addTable(t);
+    }
 
     if (statement.match(/DELETE /i)) {
       summ.type = 'DELETE';
       const matches = statement.match(/FROM ([^\s\(]+)/i);
-        if (matches) {
-          // console.log(matches);
-          matches.forEach(match=> {
-            addTable(match.replace(/FROM /i, ''));
-          });
-        }
+      if (matches) {
+        // console.log(matches);
+        matches.forEach((match) => {
+          addTable(match.replace(/FROM /i, ''));
+        });
+      }
     }
 
     if (statement.match(/CREATE TEMPORARY TABLE /i)) {
       summ.type = 'CREATE';
       const matches = statement.match(/CREATE TEMPORARY TABLE ([^\s\(\"]+)/i);
-        if (matches) {
-          // console.log(matches);
-          matches.forEach(match=> {
-            let table = match.replace(/CREATE TEMPORARY TABLE /i, '');
-            addTable(table);
-          });
-        }
+      if (matches) {
+        // console.log(matches);
+        matches.forEach((match) => {
+          let table = match.replace(/CREATE TEMPORARY TABLE /i, '');
+          addTable(table);
+        });
+      }
     }
 
     if (summ.tables.length !== 0) {
-      relationships.push(
-        summToLayer(summ, config, relationships.length)
-      );
+      relationships.push(summToLayer(summ, config, relationships.length));
     }
-
   });
 
   if (config.generateComponentStubs) {
@@ -149,4 +146,3 @@ function extractor(statements, config=defaultConfig) {
 }
 
 module.exports = extractor;
-

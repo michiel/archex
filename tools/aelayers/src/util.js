@@ -1,9 +1,7 @@
 const glob = require('glob');
 
 function toId(str) {
-  return str
-    .replace(/-/g, '_')
-    .replace(/ /g, ' ');
+  return str.replace(/-/g, '_').replace(/ /g, ' ');
 }
 
 function tableId(database, table) {
@@ -14,47 +12,51 @@ function componentId(str) {
   return toId(`component_${str}`);
 }
 
-function onlyUnique(value, index, self) { 
+function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
 function mergeElements(arr) {
-  const allIds = arr.map(el=> el.id);
+  const allIds = arr.map((el) => el.id);
   const uniqueIds = new Set(allIds);
-  const duplicates = new Set(allIds.filter(el => {
-    if (uniqueIds.has(el.id)) {
-      uniqueIds.delete(el.id);
-      return false;
-    } else {
-      return true;
-    }
-  }));
+  const duplicates = new Set(
+    allIds.filter((el) => {
+      if (uniqueIds.has(el.id)) {
+        uniqueIds.delete(el.id);
+        return false;
+      } else {
+        return true;
+      }
+    })
+  );
 
   const res = [];
 
   const completed = new Set();
-  arr.forEach(el=> {
+  arr.forEach((el) => {
     if (!duplicates.has(el.id)) {
       res.push(el);
     } else if (!completed.has(el.id)) {
-      const dups = arr.filter(e => e.id === el.id);
-      const merged = dups.reduce((acc, curr)=> {
-        return {
-          ...acc,
-          ...curr,
-          attrs: {
-            ...acc.attrs,
-            ...curr.attrs
-          },
-        };
-      }, { attrs: {}});
+      const dups = arr.filter((e) => e.id === el.id);
+      const merged = dups.reduce(
+        (acc, curr) => {
+          return {
+            ...acc,
+            ...curr,
+            attrs: {
+              ...acc.attrs,
+              ...curr.attrs
+            }
+          };
+        },
+        { attrs: {} }
+      );
       res.push(merged);
     }
     completed.add(el.id);
   });
 
   return res;
-
 }
 
 function buildTableVariationsFromCamelCase(str) {
@@ -69,7 +71,9 @@ function buildTableVariationsFromCamelCase(str) {
   variation = variation.replace(/([A-Z])/g, '_$1').replace(/^_/, '');
   vars.push(variation);
 
-  variation = variation.replace(/^./, function(str){ return str.toUpperCase(); })
+  variation = variation.replace(/^./, function (str) {
+    return str.toUpperCase();
+  });
   vars.push(variation);
 
   variation = variation.toLowerCase();
@@ -79,14 +83,14 @@ function buildTableVariationsFromCamelCase(str) {
 }
 
 async function extractAll(path, extension, fileExtractor) {
-  return new Promise((resolve, reject)=> {
+  return new Promise((resolve, reject) => {
     const res = {};
-    glob(`${path}/**/*.${extension}`, {}, function(err, files) {
-      files.forEach(file=> {
+    glob(`${path}/**/*.${extension}`, {}, function (err, files) {
+      files.forEach((file) => {
         // console.log(file);
         try {
           res[file] = fileExtractor(file);
-        } catch(e) {
+        } catch (e) {
           console.error(`Unable to process file ${file} : ${e}`);
         }
       });
@@ -96,20 +100,20 @@ async function extractAll(path, extension, fileExtractor) {
 }
 
 function summary(arr) {
-  const layers = arr.map(el=> el.layer).filter(onlyUnique);
+  const layers = arr.map((el) => el.layer).filter(onlyUnique);
   const layerData = {};
-  layers.forEach(layer=> {
-    layerData[layer] = arr.filter(el=> el.layer === layer).length;
+  layers.forEach((layer) => {
+    layerData[layer] = arr.filter((el) => el.layer === layer).length;
   });
   return {
     total: arr.length,
-    layers: layerData,
-  }
-};
+    layers: layerData
+  };
+}
 
 function missingNodesForLinks(arr) {
   const missing = [];
-  const ids = new Set(arr.map(el => el.id).filter(onlyUnique));
+  const ids = new Set(arr.map((el) => el.id).filter(onlyUnique));
 
   function check(id) {
     if (!ids.has(id)) {
@@ -125,15 +129,15 @@ function missingNodesForLinks(arr) {
       missing.push({
         id,
         layer,
-        label : `(missing) ${id}`,
-        attrs : {
-          type: 'missing',
-        },
+        label: `(missing) ${id}`,
+        attrs: {
+          type: 'missing'
+        }
       });
     }
-  };
+  }
 
-  arr.forEach(el => {
+  arr.forEach((el) => {
     switch (el.layer) {
       case 'data_access':
         check(el.source);
@@ -143,13 +147,12 @@ function missingNodesForLinks(arr) {
         el.nodes.forEach(check);
         break;
       default:
-        // console.log('Skupping ', el.layer);
+      // console.log('Skupping ', el.layer);
     }
   });
 
   return mergeElements(missing);
 }
-
 
 module.exports = {
   toId,
@@ -160,5 +163,5 @@ module.exports = {
   onlyUnique,
   componentId,
   summary,
-  missingNodesForLinks,
-}
+  missingNodesForLinks
+};

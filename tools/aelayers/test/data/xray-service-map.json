@@ -3,9 +3,7 @@
     {
       "ReferenceId": 0,
       "Name": "xray-sample.elasticbeanstalk.com",
-      "Names": [
-        "xray-sample.elasticbeanstalk.com"
-      ],
+      "Names": ["xray-sample.elasticbeanstalk.com"],
       "Type": "client",
       "State": "unknown",
       "StartTime": 1528317567,
@@ -54,9 +52,7 @@
     {
       "ReferenceId": 1,
       "Name": "awseb-e-dixzws4s9p-stack-StartupSignupsTable-4IMSMHAYX2BA",
-      "Names": [
-        "awseb-e-dixzws4s9p-stack-StartupSignupsTable-4IMSMHAYX2BA"
-      ],
+      "Names": ["awseb-e-dixzws4s9p-stack-StartupSignupsTable-4IMSMHAYX2BA"],
       "Type": "AWS::DynamoDB::Table",
       "State": "unknown",
       "StartTime": 1528317583,
@@ -100,9 +96,7 @@
     {
       "ReferenceId": 2,
       "Name": "xray-sample.elasticbeanstalk.com",
-      "Names": [
-        "xray-sample.elasticbeanstalk.com"
-      ],
+      "Names": ["xray-sample.elasticbeanstalk.com"],
       "Root": true,
       "Type": "AWS::EC2::Instance",
       "State": "active",
@@ -224,9 +218,7 @@
     {
       "ReferenceId": 3,
       "Name": "SNS",
-      "Names": [
-        "SNS"
-      ],
+      "Names": ["SNS"],
       "Type": "AWS::SNS",
       "State": "unknown",
       "StartTime": 1528317583,

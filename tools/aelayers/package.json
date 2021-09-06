@@ -4,7 +4,8 @@
   "description": "To layer JSON",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "echo 0"
   },
   "repository": {
     "type": "git",

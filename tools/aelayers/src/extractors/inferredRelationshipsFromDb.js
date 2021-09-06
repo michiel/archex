@@ -1,7 +1,7 @@
 const knex = require('knex');
 const schemaInspector = require('knex-schema-inspector').default;
 
-const {toId, tableId, buildTableVariationsFromCamelCase } = require('../util');
+const { toId, tableId, buildTableVariationsFromCamelCase } = require('../util');
 
 /*
 {
@@ -17,11 +17,10 @@ const {toId, tableId, buildTableVariationsFromCamelCase } = require('../util');
 */
 
 const defaultConfig = {
-  skipUnknown: true,
+  skipUnknown: true
 };
 
 async function extractor(knexParams, config = defaultConfig) {
-
   const database = knex(knexParams);
   const inspector = schemaInspector(database);
 
@@ -33,12 +32,11 @@ async function extractor(knexParams, config = defaultConfig) {
   const regex = /._?id$/i;
   const regexReplace = /_?id$/i;
 
-
-  columns.forEach(el=> {
+  columns.forEach((el) => {
     if (el.column.match(regex)) {
       let table = el.column.replace(regexReplace, '');
       let tableVariations = buildTableVariationsFromCamelCase(table);
-      let tableMatch = tableVariations.filter(t => {
+      let tableMatch = tableVariations.filter((t) => {
         return tables.indexOf(t) > -1;
       });
 
@@ -48,14 +46,11 @@ async function extractor(knexParams, config = defaultConfig) {
           id: toId(`data_link_${databaseName}_${el.table}_${el.column}`),
           label: `${el.column}`,
           layer: 'data_link',
-          nodes: [
-            tableId(databaseName, foundTable),
-            tableId(databaseName, el.table),
-          ],
+          nodes: [tableId(databaseName, foundTable), tableId(databaseName, el.table)],
           attrs: {
             type: 'DatabaseRelationship',
             database: databaseName,
-            extractor: 'inferredRelationshipsFromDb',
+            extractor: 'inferredRelationshipsFromDb'
           }
         });
       } else if (!config.skipUnknown) {
@@ -63,23 +58,18 @@ async function extractor(knexParams, config = defaultConfig) {
           id: toId(`data_link_${databaseName}_${el.table}_${el.column}`),
           label: `${el.column}`,
           layer: 'data_link',
-          nodes: [
-            tableId(databaseName, table),
-            toId('unknown-relationship'),
-          ],
+          nodes: [tableId(databaseName, table), toId('unknown-relationship')],
           attrs: {
             type: 'DatabaseRelationship',
             database: databaseName,
-            extractor: 'inferredRelationshipsFromDb',
+            extractor: 'inferredRelationshipsFromDb'
           }
         });
       }
     }
-
   });
 
   return res;
 }
 
 module.exports = extractor;
-
