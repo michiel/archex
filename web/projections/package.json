@@ -19,7 +19,7 @@
     "3d-force-graph": "^1.45.7",
     "3d-force-graph-vr": "^1.23.1",
     "dat.gui": "^0.7.6",
-    "three": "^0.104.0",
+    "three": "^0.125.0",
     "three-spritetext": "^1.0.6"
   }
 }
