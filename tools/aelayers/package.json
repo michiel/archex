@@ -1,0 +1,30 @@
+{
+  "name": "aelayers",
+  "version": "0.0.1",
+  "description": "To layer JSON",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michiel/to-layer-json.git"
+  },
+  "author": "Michiel Kalkman <michiel@nosuchtype.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michiel/to-layer-json/issues"
+  },
+  "homepage": "https://github.com/michiel/to-layer-json#readme",
+  "dependencies": {
+    "esprima": "^4.0.1",
+    "estraverse": "^5.2.0",
+    "glob": "^7.1.7",
+    "knex": "^0.95.10",
+    "knex-schema-inspector": "^1.5.13",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "jest": "^27.1.0"
+  }
+}

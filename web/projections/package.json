@@ -1,0 +1,25 @@
+{
+  "name": "projections",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "package": "./package.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/webpack-cli"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1"
+  },
+  "dependencies": {
+    "3d-force-graph": "^1.45.7",
+    "3d-force-graph-vr": "^1.23.1",
+    "dat.gui": "^0.7.6",
+    "three": "^0.104.0",
+    "three-spritetext": "^1.0.6"
+  }
+}
