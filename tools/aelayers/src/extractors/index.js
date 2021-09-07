@@ -8,5 +8,6 @@ module.exports = {
    stringsFromSQLFile: require('./stringsFromSQLFile'),
    stringsFromSQLFiles: require('./stringsFromSQLFiles'),
    tablesFromDb: require('./tablesFromDb'),
+   layersFromXRay: require('./layersFromXRay'),
 };
 

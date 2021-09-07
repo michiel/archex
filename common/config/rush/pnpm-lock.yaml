@@ -5,6 +5,9 @@ specifiers:
   3d-force-graph-vr: ^1.23.1
   '@rush-temp/aelayers': file:./projects/aelayers.tgz
   '@rush-temp/projections': file:./projects/projections.tgz
+  '@rush-temp/sample-microservices': file:./projects/sample-microservices.tgz
+  csv: ^5.5.3
+  csv-stringify: ^5.6.5
   dat.gui: ^0.7.6
   esprima: ^4.0.1
   estraverse: ^5.2.0
@@ -23,6 +26,9 @@ dependencies:
   3d-force-graph-vr: 1.35.6_three@0.104.0
   '@rush-temp/aelayers': file:projects/aelayers.tgz
   '@rush-temp/projections': file:projects/projections.tgz
+  '@rush-temp/sample-microservices': file:projects/sample-microservices.tgz
+  csv: 5.5.3
+  csv-stringify: 5.6.5
   dat.gui: 0.7.7
   esprima: 4.0.1
   estraverse: 5.2.0
@@ -1720,6 +1726,28 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       cssom: 0.3.8
+    dev: false
+
+  /csv-generate/3.4.3:
+    resolution: {integrity: sha512-w/T+rqR0vwvHqWs/1ZyMDWtHHSJaN06klRqJXBEpDJaM/+dZkso0OKh1VcuuYvK3XM53KysVNq8Ko/epCK8wOw==}
+    dev: false
+
+  /csv-parse/4.16.3:
+    resolution: {integrity: sha512-cO1I/zmz4w2dcKHVvpCr7JVRu8/FymG5OEpmvsZYlccYolPBLoVGKUHgNoc4ZGkFeFlWGEDmMyBM+TTqRdW/wg==}
+    dev: false
+
+  /csv-stringify/5.6.5:
+    resolution: {integrity: sha512-PjiQ659aQ+fUTQqSrd1XEDnOr52jh30RBurfzkscaE2tPaFsDH5wOAHJiw8XAHphRknCwMUE9KRayc4K/NbO8A==}
+    dev: false
+
+  /csv/5.5.3:
+    resolution: {integrity: sha512-QTaY0XjjhTQOdguARF0lGKm5/mEq9PD9/VhZZegHDIBq2tQwgNpHc3dneD4mGo2iJs+fTKv5Bp0fZ+BRuY3Z0g==}
+    engines: {node: '>= 0.1.90'}
+    dependencies:
+      csv-generate: 3.4.3
+      csv-parse: 4.16.3
+      csv-stringify: 5.6.5
+      stream-transform: 2.1.3
     dev: false
 
   /custom-event-polyfill/1.0.7:
@@ -3823,6 +3851,11 @@ packages:
       is-extendable: 1.0.1
     dev: false
 
+  /mixme/0.5.1:
+    resolution: {integrity: sha512-NaeZIckeBFT7i0XBEpGyFcAE0/bLcQ9MHErTpnU3bLWVE5WZbxG5Y3fDsMxYGifTo5khDA42OquXCC2ngKJB+g==}
+    engines: {node: '>= 8.0.0'}
+    dev: false
+
   /mkdirp/0.5.5:
     resolution: {integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==}
     hasBin: true
@@ -4824,6 +4857,12 @@ packages:
     resolution: {integrity: sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==}
     dev: false
 
+  /stream-transform/2.1.3:
+    resolution: {integrity: sha512-9GHUiM5hMiCi6Y03jD2ARC1ettBXkQBoQAe7nJsPknnI0ow10aXjTnew8QtYQmLjzn974BnmWEAJgCY6ZP1DeQ==}
+    dependencies:
+      mixme: 0.5.1
+    dev: false
+
   /strict-uri-encode/1.1.0:
     resolution: {integrity: sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=}
     engines: {node: '>=0.10.0'}
@@ -5610,10 +5649,12 @@ packages:
     dev: false
 
   file:projects/aelayers.tgz:
-    resolution: {integrity: sha512-tcuthP0ogAS/JwoCdaWbewgbYfPXN2qpC4eI8SPSkcoP9mF7yOFQNXtk9MmzWIN7Rgi7XZ8JS9NHCrrNNjnOAw==, tarball: file:projects/aelayers.tgz}
+    resolution: {integrity: sha512-MSz4+4kV6Mu+zNXTx+ImbmHaEjYBHlXsgowwbrxCbn1SbTS+IQcy9HohRYkbEpYR+KmnQ+HOTc3X/s3/si4K6w==, tarball: file:projects/aelayers.tgz}
     name: '@rush-temp/aelayers'
     version: 0.0.0
     dependencies:
+      csv: 5.5.3
+      csv-stringify: 5.6.5
       esprima: 4.0.1
       estraverse: 5.2.0
       glob: 7.1.7
@@ -5648,6 +5689,12 @@ packages:
       webpack-cli: 3.3.12_webpack@4.46.0
     transitivePeerDependencies:
       - webpack-command
+    dev: false
+
+  file:projects/sample-microservices.tgz:
+    resolution: {integrity: sha512-aZ9btgqSWUOFBJ5diohvT2qI2iPPFz90PtTqLpKgq3OB7SQyw6zk3Ia7d0q8iLwLZDvmPX7JzYjESLNDChVEMw==, tarball: file:projects/sample-microservices.tgz}
+    name: '@rush-temp/sample-microservices'
+    version: 0.0.0
     dev: false
 
   github.com/dmarcos/document-register-element/8ccc532b7f3744be954574caf3072a5fd260ca90:
