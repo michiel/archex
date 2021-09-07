@@ -1,3 +1,5 @@
+const stringify = require('csv-stringify/lib/sync')
+
 function toGML(arr) {
   let output = [];
   output.push(`
@@ -318,7 +320,7 @@ function toCSVColumn(str) {
   return `"${val}"`;
 }
 
-function toCSV(arr) {
+function toCSVx(arr) {
   const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes'];
 
   arr.forEach((el) => {
@@ -353,6 +355,35 @@ function toCSV(arr) {
     output.push(res.join(','));
   });
   return output.join('\n');
+}
+
+function toCSV(arr) {
+  const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes'];
+
+  arr.forEach((el) => {
+    if (el.attrs) {
+      for (let key in el.attrs) {
+        if (attrs.indexOf(key) < 0) {
+          attrs.push(key);
+        }
+      }
+    }
+  });
+
+  const records = arr.map(el => {
+    const attrs = el.attrs;
+    delete el.attrs;
+    return {
+      ...attrs,
+      ...el,
+    };
+  });
+
+  return stringify(records, {
+    header: true,
+    columns: attrs,
+    quoted: true,
+  });
 }
 
 module.exports = {

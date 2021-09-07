@@ -8,6 +8,6 @@ function sqlStatementsFromStrings(arr) {
   return lines;
 }
 
-modules.exports = {
+module.exports = {
   sqlStatementsFromStrings
 };
