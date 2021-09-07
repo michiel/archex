@@ -1,7 +1,11 @@
 const glob = require('glob');
 
 function toId(str) {
-  return str.replace(/-/g, '_').replace(/ /g, ' ');
+  return str
+    .replace(/-/g, '_')
+    .replace(/\./g, '_')
+    .replace(/ /g, ' ')
+    .toLowerCase();
 }
 
 function tableId(database, table) {

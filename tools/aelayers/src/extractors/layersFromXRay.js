@@ -1,3 +1,5 @@
+const { toId } = require('../util');
+
 const defaultConfig = {
   prefixRegex: '^[^-]*-dev-',
 };
@@ -5,18 +7,103 @@ const defaultConfig = {
 
 function getName(service, config) {
   const prefixRegex = new RegExp(config.prefixRegex);
+  let name = service.Name;
 
-  if (service.Type === 'AWS::Lambda') {
-    return service.Name.replace(prefixRegex, '');
-  } else if (service.Type === 'AWS::Lambda::Function') {
-    return (service.Name.replace(prefixRegex, ''));
-  } else if (service.Type === 'AWS::SQS::Queue') {
-    return service.Name.replace(/http.*\//, '').replace(prefixRegex, '');
+  if (service.Type === 'AWS::SQS::Queue') {
+    name = name.replace(/http.*\//, '');
   } else if (service.Type === 'AWS::DynamoDB::Table') {
-    return service.Name.replace(/.*-ap-southeast-2-/, '');
-  } else {
-    return service.Name;
+    name = name.replace(/.*-ap-southeast-2-/, '');
   }
+
+  name = name.replace(prefixRegex, '');
+
+  return name;
+}
+
+function extractLayerInfo(idMap) {
+  let layerId = {};
+  for (let id in idMap) {
+    const entry = idMap[id];
+    if (
+      (entry.awstype === 'remote') ||
+      (entry.awstype === 'AWS::KinesisFirehose') ||
+      (entry.awstype === 'AWS::DynamoDB::Table') ||
+      (entry.awstype === 'AWS::secretsmanager') ||
+      (entry.awstype === 'AWS::SQS::Queue') ||
+      (entry.awstype === 'Database::SQL') ||
+      (entry.awstype === 'AWS::S3')
+    ) {
+      layerId[id] = ({
+        id: toId(`data_${entry.name}`),
+        label: `${entry.name}`,
+        layer: 'data',
+        attrs: {
+          type: entry.awstype,
+          extractor: 'layersFromXRay',
+        }
+      });
+    } else if (
+      (entry.awstype === 'client') ||
+      (entry.awstype === 'custom-compute') ||
+      (entry.awstype === 'AWS::stepfunctions') ||
+      (entry.awstype === 'AWS::StepFunctions::StateMachine') ||
+      (entry.awstype === 'AWS::Lambda::Function')
+    ) {
+      layerId[id] = ({
+        id: toId(`compute_${entry.name}`),
+        label: `${entry.name}`,
+        layer: 'compute',
+        attrs: {
+          type: entry.awstype,
+          extractor: 'layersFromXRay',
+        }
+      });
+    } else {
+      throw new Error('Unhandled awstype ' + JSON.stringify(entry));
+    }
+  }
+  return layerId;
+}
+
+function generateLinks(layerInfo, idMap) {
+  let links = [];
+  for (let id in layerInfo) {
+    const entry = layerInfo[id];
+    if (entry.layer === 'compute') {
+
+      idMap[id].sources.forEach(s => {
+
+        let sentry = layerInfo[s];
+        if (sentry.layer === 'compute') {
+
+          links.push({
+            id: `compute_links_${sentry.id}_${entry.id}_${s}`,
+            layer: 'compute_link',
+            source: sentry.id,
+            target: entry.id,
+            attrs: {
+              extractor: 'layersFromXRay',
+            }
+          });
+
+        } else if (sentry.layer === 'data') {
+
+          links.push({
+            id: `data_links_${sentry.id}_${entry.id}_${s}`,
+            layer: 'data_access',
+            source: sentry.id,
+            targets: [entry.id],
+            attrs: {
+              extractor: 'layersFromXRay',
+            }
+          });
+        } else {
+          throw new Error('Unhandled layer ' + JSON.stringify(sentry));
+        }
+      });
+    }
+  }
+  return links;
 }
 
 function getEdges(service) {
@@ -68,7 +155,7 @@ function extractor(serviceMap, config=defaultConfig) {
   serviceMap.Services.forEach(service=> {
     idMap[String(service.ReferenceId)] = {
       xrayid: String(service.ReferenceId),
-      awstype: service.Type,
+      awstype: service.Type || 'custom-compute', // user instrumented
       name: getName(service, config),
       targets: getEdges(service),
       sources: [],
@@ -86,7 +173,11 @@ function extractor(serviceMap, config=defaultConfig) {
   }
 
   idMap = reduceMap(idMap);
-  return idMap;
+  layerInfo = extractLayerInfo(idMap);
+  links = generateLinks(layerInfo, idMap);
+  return links.concat(
+    Object.entries(layerInfo)
+    .map(([k,v])=> v));
 }
 
 module.exports = extractor;
