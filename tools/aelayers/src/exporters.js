@@ -32,6 +32,26 @@ graph [
 
         break;
 
+      case 'compute_link':
+        str = `
+    edge [
+        id ${el.id}
+        label "${el.label}"
+        source ${el.source}
+        target ${el.target}
+`;
+        str += `
+        layer ${el.layer}`;
+
+        Object.entries(el.attrs).forEach(([k, v]) => {
+          str += `
+        ${k} "${v}"`;
+        });
+        str += `
+    ]`;
+        output.push(str);
+        break;
+
       case 'data_link':
         str = `
     edge [
@@ -252,13 +272,26 @@ function toF3DJSON(arr) {
 
   arr.forEach((el) => {
     switch (el.layer) {
+
+      case 'compute_link':
+        output.links.push({
+          id: el.id,
+          label: el.label,
+          name: el.label,
+          layer: el.layer,
+          source: el.source,
+          target: el.target,
+          attrs: extractAttrs(el.attrs),
+          ...props
+        });
+        break;
+
       case 'compute':
         output.nodes.push({
           id: el.id,
           label: el.label,
           name: el.label,
           layer: el.layer,
-          color: colorForLayer(el.layer),
           attrs: extractAttrs(el.attrs),
           ...props
         });
@@ -270,7 +303,6 @@ function toF3DJSON(arr) {
           label: el.label,
           name: el.label,
           layer: el.layer,
-          color: colorForLayer(el.layer),
           attrs: extractAttrs(el.attrs),
           ...props
         });
@@ -282,7 +314,6 @@ function toF3DJSON(arr) {
           label: el.label,
           name: el.label,
           layer: el.layer,
-          color: colorForLayer(el.layer),
           source: el.nodes[0],
           target: el.nodes[1],
           attrs: extractAttrs(el.attrs),
@@ -297,7 +328,6 @@ function toF3DJSON(arr) {
             label: el.label,
             name: el.label,
             layer: el.layer,
-            color: colorForLayer(el.layer),
             source: el.source,
             target: t,
             attrs: extractAttrs(el.attrs),

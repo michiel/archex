@@ -77,7 +77,8 @@ function generateLinks(layerInfo, idMap) {
         if (sentry.layer === 'compute') {
 
           links.push({
-            id: `compute_links_${sentry.id}_${entry.id}_${s}`,
+            id: `compute_link_${sentry.id}_${entry.id}_${s}`,
+            label: `Access ${entry.id}`,
             layer: 'compute_link',
             source: sentry.id,
             target: entry.id,
@@ -89,7 +90,8 @@ function generateLinks(layerInfo, idMap) {
         } else if (sentry.layer === 'data') {
 
           links.push({
-            id: `data_links_${sentry.id}_${entry.id}_${s}`,
+            id: `data_access_${sentry.id}_${entry.id}_${s}`,
+            label: `Access ${entry.id}`,
             layer: 'data_access',
             source: sentry.id,
             targets: [entry.id],
