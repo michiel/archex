@@ -31,6 +31,7 @@ function extractLayerInfo(idMap) {
       (entry.awstype === 'AWS::secretsmanager') ||
       (entry.awstype === 'AWS::SQS::Queue') ||
       (entry.awstype === 'Database::SQL') ||
+      (entry.awstype === 'AWS::SNS') ||
       (entry.awstype === 'AWS::S3')
     ) {
       layerId[id] = ({
@@ -47,6 +48,7 @@ function extractLayerInfo(idMap) {
       (entry.awstype === 'custom-compute') ||
       (entry.awstype === 'AWS::stepfunctions') ||
       (entry.awstype === 'AWS::StepFunctions::StateMachine') ||
+      (entry.awstype === 'AWS::EC2::Instance') ||
       (entry.awstype === 'AWS::Lambda::Function')
     ) {
       layerId[id] = ({
@@ -69,13 +71,14 @@ function generateLinks(layerInfo, idMap) {
   let links = [];
   for (let id in layerInfo) {
     const entry = layerInfo[id];
+
     if (entry.layer === 'compute') {
-
       idMap[id].sources.forEach(s => {
-
+        if (s.id === id) {
+          return;
+        }
         let sentry = layerInfo[s];
         if (sentry.layer === 'compute') {
-
           links.push({
             id: `compute_link_${sentry.id}_${entry.id}_${s}`,
             label: `Access ${entry.id}`,
@@ -86,15 +89,33 @@ function generateLinks(layerInfo, idMap) {
               extractor: 'layersFromXRay',
             }
           });
+        }
+      });
 
-        } else if (sentry.layer === 'data') {
+      idMap[id].targets.forEach(t => {
+        if (t.id === id) {
+          return;
+        }
+        let tentry = layerInfo[t];
+        if (tentry.layer === 'compute') {
+          links.push({
+            id: `compute_link_${entry.id}_${tentry.id}_${t}`,
+            label: `Access ${tentry.id}`,
+            layer: 'compute_link',
+            source: entry.id,
+            target: tentry.id,
+            attrs: {
+              extractor: 'layersFromXRay',
+            }
+          });
+        } else if (tentry.layer === 'data') {
 
           links.push({
-            id: `data_access_${sentry.id}_${entry.id}_${s}`,
-            label: `Access ${entry.id}`,
+            id: `data_access_${entry.id}_${tentry.id}_${t}`,
+            label: `Access ${tentry.id}`,
             layer: 'data_access',
-            source: sentry.id,
-            targets: [entry.id],
+            source: entry.id,
+            targets: [tentry.id],
             attrs: {
               extractor: 'layersFromXRay',
             }
