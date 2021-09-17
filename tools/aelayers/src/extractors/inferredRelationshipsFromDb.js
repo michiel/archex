@@ -1,7 +1,7 @@
 const knex = require('knex');
 const schemaInspector = require('knex-schema-inspector').default;
 
-const { toId, tableId, buildTableVariationsFromCamelCase } = require('../util');
+const { toId, tableId, buildTableVariations } = require('../util');
 
 /*
 {
@@ -35,7 +35,7 @@ async function extractor(knexParams, config = defaultConfig) {
   columns.forEach((el) => {
     if (el.column.match(regex)) {
       let table = el.column.replace(regexReplace, '');
-      let tableVariations = buildTableVariationsFromCamelCase(table);
+      let tableVariations = buildTableVariations(table);
       let tableMatch = tableVariations.filter((t) => {
         return tables.indexOf(t) > -1;
       });

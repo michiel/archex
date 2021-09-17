@@ -63,6 +63,15 @@ function mergeElements(arr) {
   return res;
 }
 
+function pluralise(arr) {
+  return arr.map(e=> `${e}s`);
+}
+
+function buildTableVariations(str) {
+  let res = buildTableVariationsFromCamelCase(str);
+  res = res.concat(pluralise(res));
+  return res;
+}
 function buildTableVariationsFromCamelCase(str) {
   const vars = [];
 
@@ -115,6 +124,22 @@ function summary(arr) {
   };
 }
 
+function createDataAccessConnections(source, targets) {
+  let i=0;
+  return targets.map(t=> {
+    return {
+      id: `placeholder_${i++}`,
+      layer: 'data_link',
+      source: source.id,
+      targets: [t.id],
+      attrs: {
+        type: 'DatabaseToTable',
+        extractor: 'createDataAccessConnections',
+      }
+    }
+  });
+}
+
 function missingNodesForLinks(arr) {
   const missing = [];
   const ids = new Set(arr.map((el) => el.id).filter(onlyUnique));
@@ -162,10 +187,13 @@ module.exports = {
   toId,
   tableId,
   mergeElements,
+  buildTableVariations,
   buildTableVariationsFromCamelCase,
+  createDataAccessConnections,
   extractAll,
   onlyUnique,
   componentId,
   summary,
+  pluralise,
   missingNodesForLinks
 };

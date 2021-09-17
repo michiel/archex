@@ -74,7 +74,7 @@ function generateLinks(layerInfo, idMap) {
 
     if (entry.layer === 'compute') {
       idMap[id].sources.forEach(s => {
-        if (s.id === id) {
+        if (s === entry.id) {
           return;
         }
         let sentry = layerInfo[s];
@@ -93,7 +93,7 @@ function generateLinks(layerInfo, idMap) {
       });
 
       idMap[id].targets.forEach(t => {
-        if (t.id === id) {
+        if (t === entry.id) {
           return;
         }
         let tentry = layerInfo[t];
@@ -198,6 +198,7 @@ function extractor(serviceMap, config=defaultConfig) {
   idMap = reduceMap(idMap);
   layerInfo = extractLayerInfo(idMap);
   links = generateLinks(layerInfo, idMap);
+  console.error(layerInfo);
   return links.concat(
     Object.entries(layerInfo)
     .map(([k,v])=> v));

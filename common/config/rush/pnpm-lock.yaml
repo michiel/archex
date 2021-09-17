@@ -16,14 +16,14 @@ specifiers:
   knex: ^0.95.10
   knex-schema-inspector: ^1.5.13
   mysql: ^2.18.1
-  three: ^0.104.0
+  three: ^0.125.0
   three-spritetext: ^1.0.6
   webpack: ^4.30.0
   webpack-cli: ^3.3.1
 
 dependencies:
   3d-force-graph: 1.70.5
-  3d-force-graph-vr: 1.35.6_three@0.104.0
+  3d-force-graph-vr: 1.35.6_three@0.125.2
   '@rush-temp/aelayers': file:projects/aelayers.tgz
   '@rush-temp/projections': file:projects/projections.tgz
   '@rush-temp/sample-microservices': file:projects/sample-microservices.tgz
@@ -37,19 +37,19 @@ dependencies:
   knex: 0.95.11_mysql@2.18.1
   knex-schema-inspector: 1.6.0
   mysql: 2.18.1
-  three: 0.104.0
-  three-spritetext: 1.6.2_three@0.104.0
+  three: 0.125.2
+  three-spritetext: 1.6.2_three@0.125.2
   webpack: 4.46.0_webpack-cli@3.3.12
   webpack-cli: 3.3.12_webpack@4.46.0
 
 packages:
 
-  /3d-force-graph-vr/1.35.6_three@0.104.0:
+  /3d-force-graph-vr/1.35.6_three@0.125.2:
     resolution: {integrity: sha512-oSuKUxnnZ9w/9cFrRrMcyyaOeA/gHPQPkEDnjoZuoiFWITZ0CPQ5zBLZdp21zYJHQq/5s8mWCCvMxsPVzc6j5g==}
     dependencies:
       aframe: 1.2.0
       aframe-extras: 6.1.1_aframe@1.2.0
-      aframe-forcegraph-component: 2.27.7_three@0.104.0
+      aframe-forcegraph-component: 2.27.7_three@0.125.2
       kapsule: 1.13.4
     transitivePeerDependencies:
       - three
@@ -896,11 +896,11 @@ packages:
       three-pathfinding: 0.7.0
     dev: false
 
-  /aframe-forcegraph-component/2.27.7_three@0.104.0:
+  /aframe-forcegraph-component/2.27.7_three@0.125.2:
     resolution: {integrity: sha512-OTuu1o1HqpDW8en3FPgqr8wCqo1A7kq1MdxFAzMi6pPR93aogbsAwz91aWvjMi8e8GK9y0N1Ijc25ExCDJ9Mag==}
     dependencies:
       accessor-fn: 1.3.1
-      three-forcegraph: 1.39.1_three@0.104.0
+      three-forcegraph: 1.39.1_three@0.125.2
     transitivePeerDependencies:
       - three
     dev: false
@@ -5027,7 +5027,7 @@ packages:
       minimatch: 3.0.4
     dev: false
 
-  /three-forcegraph/1.39.1_three@0.104.0:
+  /three-forcegraph/1.39.1_three@0.125.2:
     resolution: {integrity: sha512-IRmp4nAkmuJ84igSRazz05wwgckyjHbrMHBmZlhPw3HbpZMv0V8WtQ5aRE4vuqBdJX2wNexR/RZJu9khg1OhXQ==}
     peerDependencies:
       three: '>=0.118.3'
@@ -5041,7 +5041,7 @@ packages:
       kapsule: 1.13.4
       ngraph.forcelayout: 3.1.0
       ngraph.graph: 19.1.0
-      three: 0.104.0
+      three: 0.125.2
       tinycolor2: 1.4.2
     dev: false
 
@@ -5079,16 +5079,16 @@ packages:
       three: 0.132.2
     dev: false
 
-  /three-spritetext/1.6.2_three@0.104.0:
+  /three-spritetext/1.6.2_three@0.125.2:
     resolution: {integrity: sha512-VALj40t81Z6x/fDnY/tts8QU+mBl77bxoynBbcn/DW4oxfzZSwjaOfkQOe0jYpLoK2vtP0bAULvGgwIYnsN6oQ==}
     peerDependencies:
       three: '>=0.86.0'
     dependencies:
-      three: 0.104.0
+      three: 0.125.2
     dev: false
 
-  /three/0.104.0:
-    resolution: {integrity: sha512-q617IMBC5k40U2E9UC4/LtmhzTOOLB1jGMIooUL+QrhZ7abiGCSDrKrpCDt9V8RTl6xw+0FYfA1PYsIPKbQOgg==}
+  /three/0.125.2:
+    resolution: {integrity: sha512-7rIRO23jVKWcAPFdW/HREU2NZMGWPBZ4XwEMt0Ak0jwLUKVJhcKM55eCBWyGZq/KiQbeo1IeuAoo/9l2dzhTXA==}
     dev: false
 
   /three/0.132.2:
@@ -5676,15 +5676,15 @@ packages:
     dev: false
 
   file:projects/projections.tgz:
-    resolution: {integrity: sha512-KkxlxC1yzPLXGJpmMIJUvWwx5vvqTFVTvNfU8nNAk/BlF7rRzzAR5V0dYnbH2W66k745K8tL7BBBl5SkHsFrAg==, tarball: file:projects/projections.tgz}
+    resolution: {integrity: sha512-dkdFx66xVayKcI9jzH/mbaM2EYEhrDkC5aTsBM2rKVv8igTKW6udVZA43gUZ4R9jQTlVVI322uoZbEo55C+qZQ==, tarball: file:projects/projections.tgz}
     name: '@rush-temp/projections'
     version: 0.0.0
     dependencies:
       3d-force-graph: 1.70.5
-      3d-force-graph-vr: 1.35.6_three@0.104.0
+      3d-force-graph-vr: 1.35.6_three@0.125.2
       dat.gui: 0.7.7
-      three: 0.104.0
-      three-spritetext: 1.6.2_three@0.104.0
+      three: 0.125.2
+      three-spritetext: 1.6.2_three@0.125.2
       webpack: 4.46.0_webpack-cli@3.3.12
       webpack-cli: 3.3.12_webpack@4.46.0
     transitivePeerDependencies:
