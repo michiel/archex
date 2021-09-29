@@ -4,7 +4,7 @@ module.exports = {
    inferredRelationshipsFromDb: require('./inferredRelationshipsFromDb'),
    sqlStatementsFromStrings: require('./sqlStatementsFromStrings'),
    stringsFromJSFile: require('./stringsFromJSFile'),
-   stringsFromJSFiles: require('./stringsFromSQLFiles'),
+   stringsFromJSFiles: require('./stringsFromJSFiles'),
    stringsFromSQLFile: require('./stringsFromSQLFile'),
    stringsFromSQLFiles: require('./stringsFromSQLFiles'),
    tablesFromDb: require('./tablesFromDb'),

@@ -12,7 +12,7 @@ test('extract layers from xray service map', () => {
     prefixRegex: '^.*-stack-',
   });
 
-  console.error(layers);
+  // TODO
 
 
 });

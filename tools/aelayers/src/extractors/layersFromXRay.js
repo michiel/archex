@@ -198,7 +198,6 @@ function extractor(serviceMap, config=defaultConfig) {
   idMap = reduceMap(idMap);
   layerInfo = extractLayerInfo(idMap);
   links = generateLinks(layerInfo, idMap);
-  console.error(layerInfo);
   return links.concat(
     Object.entries(layerInfo)
     .map(([k,v])=> v));

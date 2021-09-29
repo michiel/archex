@@ -1,5 +1,20 @@
 const stringify = require('csv-stringify/lib/sync')
 
+function gmlAttrsToString(el) {
+  // console.error(el);
+  let str = '';
+  let attrs = el.attrs || {};
+  try {
+    Object.entries(attrs).forEach(([k, v]) => {
+      str += `
+          ${k} "${v}"`;
+    });
+  } catch (e) {
+    console.error('Error with ', el);
+  }
+  return str;
+}
+
 function toGML(arr) {
   let output = [];
   output.push(`
@@ -12,20 +27,27 @@ graph [
     let str = '';
     switch (el.layer) {
       case 'data':
+        str = `
+    node [
+        id ${el.id}
+        label "${el.label}"
+        layer ${el.layer}
+`;
+        str += gmlAttrsToString(el);
+        str += `
+    ]`;
+        output.push(str);
+
+        break;
       case 'compute':
         str = `
     node [
         id ${el.id}
         label "${el.label}"
-    `;
-        str += `
         layer ${el.layer}
 `;
 
-        Object.entries(el.attrs).forEach(([k, v]) => {
-          str += `
-        ${k} "${v}"`;
-        });
+        str += gmlAttrsToString(el);
         str += `
     ]`;
         output.push(str);
@@ -39,14 +61,9 @@ graph [
         label "${el.label}"
         source ${el.source}
         target ${el.target}
-`;
-        str += `
         layer ${el.layer}`;
 
-        Object.entries(el.attrs).forEach(([k, v]) => {
-          str += `
-        ${k} "${v}"`;
-        });
+        str += gmlAttrsToString(el);
         str += `
     ]`;
         output.push(str);
@@ -59,14 +76,9 @@ graph [
         label "${el.label}"
         source ${el.nodes[0]}
         target ${el.nodes[1]}
-`;
-        str += `
         layer ${el.layer}`;
 
-        Object.entries(el.attrs).forEach(([k, v]) => {
-          str += `
-        ${k} "${v}"`;
-        });
+        str += gmlAttrsToString(el);
         str += `
     ]`;
         output.push(str);
@@ -80,14 +92,9 @@ graph [
         label "${el.label}"
         source ${el.source}
         target ${target}
-`;
-          str += `
         layer ${el.layer}`;
 
-          Object.entries(el.attrs).forEach(([k, v]) => {
-            str += `
-        ${k} "${v}"`;
-          });
+          str += gmlAttrsToString(el);
           str += `
     ]`;
           output.push(str);
@@ -353,7 +360,8 @@ function toCSVColumn(str) {
 function toCSVx(arr) {
   const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes'];
 
-  arr.forEach((el) => {
+  arr.forEach(el=> {
+gt
     if (el.attrs) {
       for (let key in el.attrs) {
         if (attrs.indexOf(key) < 0) {
@@ -361,30 +369,10 @@ function toCSVx(arr) {
         }
       }
     }
+
   });
 
-  const output = [];
-  output.push(attrs.join(','));
-  arr.forEach((el) => {
-    let res = new Array(attrs.length).fill('');
-    for (let tkey in el) {
-      if (tkey === 'attrs') {
-        for (let akey in el.attrs) {
-          let val = el.attrs[akey];
-          res[attrs.indexOf(akey)] = toCSVColumn(val);
-        }
-      } else {
-        let val = el[tkey];
-        if (tkey === 'nodes') {
-          res[attrs.indexOf('source')] = val[0];
-          res[attrs.indexOf('target')] = val[1];
-        }
-        res[attrs.indexOf(tkey)] = val;
-      }
-    }
-    output.push(res.join(','));
-  });
-  return output.join('\n');
+
 }
 
 function toCSV(arr) {
@@ -416,9 +404,46 @@ function toCSV(arr) {
   });
 }
 
+function dataLinksToCSVMatrix(arr) {
+
+  let xrowMap = {};
+  let xrowLabels = [];
+  arr.filter(el=> el.layer === 'data').forEach(el=> {
+    xrowLabels.push(el.label);
+    xrowMap[el.id] = el;
+  });
+
+  let ycolumnMap = {};
+  let ycolumnLabels = [];
+
+  arr.filter(el=> el.layer === 'compute').forEach(el=> {
+    ycolumnLabels.push(el.label);
+    ycolumnMap[el.id] = el;
+  });
+
+  function xPos(id) {
+    let label = xrowMap[id].label;
+    return xrowsLabels.indexOf(label)
+  }
+
+  function yPos(id) {
+    let label = yrowMap[id].label;
+    return yrowsLabels.indexOf(label)
+  }
+
+  let links = arr.filter(el=> el.layer === 'data_access');
+
+  links.forEach(link=> {
+    console.log(link);
+  });
+
+}
+
 module.exports = {
   toF3DJSON,
   toGML,
   toGMLExpanded,
-  toCSV
+  toCSV,
+  dataLinksToCSVMatrix,
 };
+

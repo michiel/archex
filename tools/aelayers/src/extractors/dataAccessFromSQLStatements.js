@@ -67,16 +67,17 @@ function extractor(statements, config = defaultConfig) {
         // skip
       } else if (table.match(/^\s+$/)) {
         // skip
+      } else if (table.length < 2) {
+        // skip
       } else {
         summ.tables.push(table);
       }
     }
 
-    if (statement.match(/SELECT /i)) {
+    if (statement.match(/SELECT[\s\n\r]/i)) {
       summ.type = 'SELECT';
       const matches = statement.match(/FROM ([^\s\(]+)/gi);
       if (matches) {
-        // console.log(matches);
         matches.forEach((match) => {
           addTable(match.replace(/FROM /i, ''));
         });
@@ -84,7 +85,6 @@ function extractor(statements, config = defaultConfig) {
 
       const joins = statement.match(/JOIN ([^\s\(]+)/gi);
       if (joins) {
-        // console.log('JOINS ', joins);
         joins.forEach((match) => {
           addTable(match.replace(/JOIN /i, ''));
         });
@@ -139,8 +139,8 @@ function extractor(statements, config = defaultConfig) {
   if (config.generateComponentStubs) {
     return relationships.concat(componentStubs(relationships, config));
   } else {
-    console.log('mf');
-    console.log(relationships);
+    // console.log('mf');
+    // console.log(relationships);
     return relationships;
   }
 }

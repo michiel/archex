@@ -99,8 +99,10 @@ async function extractAll(path, extension, fileExtractor) {
   return new Promise((resolve, reject) => {
     const res = {};
     glob(`${path}/**/*.${extension}`, {}, function (err, files) {
+      if (files.length === 0) {
+        throw new Error(`0 files found extracting type:${extension} from path:${path}`);
+      }
       files.forEach((file) => {
-        // console.log(file);
         try {
           res[file] = fileExtractor(file);
         } catch (e) {
