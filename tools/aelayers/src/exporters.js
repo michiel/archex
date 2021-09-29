@@ -1,13 +1,20 @@
 const stringify = require('csv-stringify/lib/sync')
 
 function gmlAttrsToString(el) {
+  let attrsAllowed = [
+    'type',
+    'extractor',
+    'querytype',
+  ];
   // console.error(el);
   let str = '';
   let attrs = el.attrs || {};
   try {
     Object.entries(attrs).forEach(([k, v]) => {
-      str += `
-          ${k} "${v}"`;
+      if (attrsAllowed.indexOf(k) > -1) {
+        str += `
+            ${k} "${v}"`;
+      }
     });
   } catch (e) {
     console.error('Error with ', el);
@@ -357,24 +364,34 @@ function toCSVColumn(str) {
   return `"${val}"`;
 }
 
-function toCSVx(arr) {
-  const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes'];
-
-  arr.forEach(el=> {
-gt
-    if (el.attrs) {
-      for (let key in el.attrs) {
-        if (attrs.indexOf(key) < 0) {
-          attrs.push(key);
-        }
-      }
+function toCSV(arr) {
+  const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes', 'type', 'extractor', 'querytype', 'query'];
+  const list = arr.map(el=> { 
+    let obj = JSON.parse(JSON.stringify(el));
+    obj['attrs'] = obj['attrs'] || {};
+    obj.type = obj.attrs.type;
+    obj.extractor = obj.attrs.extractor;
+    obj.querytype = obj.attrs.querytype;
+    obj.query = obj.attrs.query;
+    if (Array.isArray(obj.nodes)) {
+      obj.nodes = obj.nodes.join(';');
     }
-
+    if (Array.isArray(obj.targets)) {
+      obj.targets = obj.targets.join(';');
+    }
+    delete obj['attrs'];
+    return obj;
   });
 
+  return stringify(list, {
+    header: true,
+    columns: attrs,
+    quoted: true,
+  });
 
 }
 
+/*
 function toCSV(arr) {
   const attrs = ['id', 'label', 'layer', 'source', 'target', 'targets', 'nodes'];
 
@@ -403,6 +420,7 @@ function toCSV(arr) {
     quoted: true,
   });
 }
+*/
 
 function dataLinksToCSVMatrix(arr) {
 
@@ -422,19 +440,46 @@ function dataLinksToCSVMatrix(arr) {
   });
 
   function xPos(id) {
+    console.error(id);
     let label = xrowMap[id].label;
-    return xrowsLabels.indexOf(label)
+    return xrowLabels.indexOf(label) + 1
   }
 
   function yPos(id) {
-    let label = yrowMap[id].label;
-    return yrowsLabels.indexOf(label)
+    let label = ycolumnMap[id].label;
+    return ycolumnLabels.indexOf(label) + 1
+  }
+
+  let matrix = [
+    ['x'].concat(xrowLabels)
+  ];
+
+  function makeRow(label) {
+    return [label].concat(xrowLabels.map(el=>0));
+  }
+
+  ycolumnLabels.forEach(col=> {
+    matrix.push(makeRow(col));
+  });
+
+  function bump(yId, xId) {
+    matrix[yPos(yId)][xPos(xId)] += 1;
   }
 
   let links = arr.filter(el=> el.layer === 'data_access');
 
+  console.error(xrowMap);
   links.forEach(link=> {
-    console.log(link);
+    console.error(link);
+    link.targets.forEach(t => {
+      bump(link.source, t);
+    });
+  });
+
+  return stringify(matrix, {
+    header: false,
+    // columns: attrs,
+    quoted: false,
   });
 
 }
