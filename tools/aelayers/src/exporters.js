@@ -422,7 +422,7 @@ function toCSV(arr) {
 }
 */
 
-function dataLinksToCSVMatrix(arr) {
+function dataAccessToCSVMatrix(arr) {
 
   let xrowMap = {};
   let xrowLabels = [];
@@ -440,7 +440,6 @@ function dataLinksToCSVMatrix(arr) {
   });
 
   function xPos(id) {
-    console.error(id);
     let label = xrowMap[id].label;
     return xrowLabels.indexOf(label) + 1
   }
@@ -468,12 +467,67 @@ function dataLinksToCSVMatrix(arr) {
 
   let links = arr.filter(el=> el.layer === 'data_access');
 
-  console.error(xrowMap);
   links.forEach(link=> {
-    console.error(link);
     link.targets.forEach(t => {
       bump(link.source, t);
     });
+  });
+
+  return stringify(matrix, {
+    header: false,
+    // columns: attrs,
+    quoted: false,
+  });
+
+}
+
+function dataLinksToCSVMatrix(arr) {
+
+  let xrowMap = {};
+  let xrowLabels = [];
+
+  let ycolumnMap = {};
+  let ycolumnLabels = [];
+
+  arr.filter(el=> el.layer === 'data').forEach(el=> {
+    xrowLabels.push(el.label);
+    xrowMap[el.id] = el;
+
+    ycolumnLabels.push(el.label);
+    ycolumnMap[el.id] = el;
+  });
+
+  function xPos(id) {
+    let label = xrowMap[id].label;
+    return xrowLabels.indexOf(label) + 1
+  }
+
+  function yPos(id) {
+    let label = ycolumnMap[id].label;
+    return ycolumnLabels.indexOf(label) + 1
+  }
+
+  let matrix = [
+    ['x'].concat(xrowLabels)
+  ];
+
+  function makeRow(label) {
+    return [label].concat(xrowLabels.map(el=>0));
+  }
+
+  ycolumnLabels.forEach(col=> {
+    matrix.push(makeRow(col));
+  });
+
+  function bump(yId, xId) {
+    console.log(yId, xId);
+    matrix[yPos(yId)][xPos(xId)] += 1;
+  }
+
+  let links = arr.filter(el=> el.layer === 'data_link');
+
+  links.forEach(link=> {
+    bump(link.nodes[0], link.nodes[1]);
   });
 
   return stringify(matrix, {
@@ -490,5 +544,6 @@ module.exports = {
   toGMLExpanded,
   toCSV,
   dataLinksToCSVMatrix,
+  dataAccessToCSVMatrix,
 };
 
