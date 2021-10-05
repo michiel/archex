@@ -1,0 +1,27 @@
+{
+  "name": "reference-vis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "package": "./package.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack-cli"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.56.0",
+    "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "3d-force-graph": "^1.45.7",
+    "3d-force-graph-vr": "^1.23.1",
+    "d3": "^7.1.1",
+    "dat.gui": "^0.7.6",
+    "force-graph": "^1.42.3",
+    "three": "^0.104.0",
+    "three-spritetext": "^1.0.6"
+  }
+}
