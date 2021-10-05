@@ -81,8 +81,8 @@ graph [
     edge [
         id ${el.id}
         label "${el.label}"
-        source ${el.nodes[0]}
-        target ${el.nodes[1]}
+        source ${el.source}
+        target ${el.target}
         layer ${el.layer}`;
 
         str += gmlAttrsToString(el);
@@ -171,7 +171,7 @@ graph [
         str = `
     edge [
         id ${el.id}_1
-        source ${el.nodes[0]}
+        source ${el.source}
         target ${el.id}
         `;
         Object.entries(el.attrs).forEach(([k, v]) => {
@@ -185,7 +185,7 @@ graph [
     edge [
         id ${el.id}_2
         source ${el.id}
-        target ${el.nodes[1]}
+        target ${el.target}
         `;
         Object.entries(el.attrs).forEach(([k, v]) => {
           str += `
@@ -328,8 +328,8 @@ function toF3DJSON(arr) {
           label: el.label,
           name: el.label,
           layer: el.layer,
-          source: el.nodes[0],
-          target: el.nodes[1],
+          source: el.source,
+          target: el.target,
           attrs: extractAttrs(el.attrs),
           ...props
         });
@@ -527,7 +527,7 @@ function dataLinksToCSVMatrix(arr) {
   let links = arr.filter(el=> el.layer === 'data_link');
 
   links.forEach(link=> {
-    bump(link.nodes[0], link.nodes[1]);
+    bump(link.source, link.target);
   });
 
   return stringify(matrix, {

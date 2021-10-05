@@ -46,7 +46,8 @@ async function extractor(knexParams, config = defaultConfig) {
           id: toId(`data_link_${databaseName}_${el.table}_${el.column}`),
           label: `${el.column}`,
           layer: 'data_link',
-          nodes: [tableId(databaseName, foundTable), tableId(databaseName, el.table)],
+          source: tableId(databaseName, foundTable),
+          target: tableId(databaseName, el.table),
           attrs: {
             type: 'DatabaseRelationship',
             database: databaseName,
@@ -58,7 +59,8 @@ async function extractor(knexParams, config = defaultConfig) {
           id: toId(`data_link_${databaseName}_${el.table}_${el.column}`),
           label: `${el.column}`,
           layer: 'data_link',
-          nodes: [tableId(databaseName, table), toId('unknown-relationship')],
+          source: tableId(databaseName, table),
+          target: toId('unknown-relationship'),
           attrs: {
             type: 'DatabaseRelationship',
             database: databaseName,

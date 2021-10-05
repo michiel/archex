@@ -4,7 +4,7 @@ function toId(str) {
   return str
     .replace(/-/g, '_')
     .replace(/\./g, '_')
-    .replace(/ /g, ' ')
+    .replace(/ /g, '_')
     .toLowerCase();
 }
 

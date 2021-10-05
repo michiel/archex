@@ -28,7 +28,8 @@ async function extractor(knexParams) {
       id: toId(`data_link_${databaseName}_${fk.constraint_name}`),
       label: `${fk.constraint_name}`,
       layer: 'data_link',
-      nodes: [tableId(databaseName, fk.table), tableId(databaseName, fk.foreign_key_table)],
+      source: tableId(databaseName, fk.table),
+      target: tableId(databaseName, fk.foreign_key_table),
       attrs: {
         type: 'DatabaseForeignKey',
         database: databaseName,
