@@ -24,7 +24,7 @@
     "esprima": "^4.0.1",
     "estraverse": "^5.2.0",
     "glob": "^7.1.7",
-    "knex": "^0.95.10",
+    "knex": "^2.4.0",
     "knex-schema-inspector": "^1.5.13",
     "mysql": "^2.18.1",
     "pg": "^8.7.1"
